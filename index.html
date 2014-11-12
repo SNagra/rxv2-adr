@@ -28,7 +28,7 @@
             var drug = getUrlParameter('generic');
 
             var req = new XMLHttpRequest();
-            var url = 'https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:"' + drug  + '"&count=patient.reaction.reactionmeddrapt.exact&limit=25';
+            var url = 'https://api.fda.gov/drug/event.json?search=receivedate:[20130101+TO+20150101]+AND+patient.drug.openfda.generic_name:"' + drug  + '"&count=patient.reaction.reactionmeddrapt.exact&limit=25';
             req.onload = reqListener;
             req.open("GET",  url, true);
             req.send();
@@ -41,20 +41,7 @@
                 drugResponse = JSON.parse(this.responseText);
 
                 var ctx = document.getElementById("myChart").getContext("2d");
-                var data = [
-                        {
-                            value: 300,
-                            label: "Red"
-                        },
-                        {
-                            value: 50,
-                            label: "Green"
-                        },
-                        {
-                            value: 100,
-                            label: "Yellow"
-                        }
-                    ];
+
                 console.log(drugResponse.results);
 
                 var stringJSON = JSON.stringify(drugResponse.results);
@@ -95,7 +82,7 @@
                 if (drug == null) {
                     document.getElementById('title').innerHTML = "Type generic drug name above.";
                 } else {
-                document.getElementById('title').innerHTML = "Top 20 adverse reactions reported for " + drug  ;
+                document.getElementById('title').innerHTML = "Top 20 adverse reports for " + drug + "since 1/1/2013" ;
                 }
             }
 
