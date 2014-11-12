@@ -2,11 +2,15 @@
     text-align: center;
 }
 
+#title {
+    text-align: center;
+}
+
 #myChart {
     width: 400px;
     height: 400px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: auto;
+    display: block;
 }
 
 .title {
@@ -15,4 +19,18 @@
     padding: 5px;
     color: white;
     border-radius: 5px;
+}
+
+.placeholder {
+    display: block;
+    padding: 5px;
+    margin: 10px;
+    float: none;
+}
+
+.warning-container {
+    padding: 5px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    float: left;
 }

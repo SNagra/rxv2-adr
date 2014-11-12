@@ -25,7 +25,6 @@
                         }
                     }
                 }
-
             var drug = getUrlParameter('generic');
 
             var req = new XMLHttpRequest();
@@ -96,7 +95,7 @@
                 if (drug == null) {
                     document.getElementById('title').innerHTML = "Type generic drug name above.";
                 } else {
-                document.getElementById('title').innerHTML = "Adverse reactions reported for " + drug  ;
+                document.getElementById('title').innerHTML = "Top 20 adverse reactions reported for " + drug  ;
                 }
             }
 
@@ -140,7 +139,7 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="lead-title">RxV2 Labs</h1>
+            <h1 class="lead-title">RxV2 Labs ADR</h1>
             <form action="/" method="get">
                 <input type="text" name="generic" class="form-control">
             </form>
@@ -148,6 +147,15 @@
 <!--            <p id="response"></p>-->
             <canvas id="myChart" width="400" height="400"></canvas>
             <div id="placeholder"></div>
+            <div class="warning-container bg-warning">
+                <h2 class="">Disclaimer</h2>
+                <h3>About drug adverse events</h3>
+                <p>The U.S. Food and Drug Administration (FDA) regulates over-the-counter and prescription drugs in the United States, including biological therapeutics and generic drugs. This work covers more than just medicines. For example, fluoride toothpaste, antiperspirants, dandruff shampoos and sunscreens are all considered drugs.</p>
+                <p>An adverse event is submitted to the FDA to report any undesirable experience associated with the use of a medical product in a patient. For drugs, this includes serious drug side effects, product use errors, product quality problems, and therapeutic failures for prescription or over-the-counter medicines and medicines administered to hospital patients or at outpatient infusion centers.</p>
+                <p><strong>When a report lists multiple drugs and multiple reactions, there is no way to conclude from the data therein that a given drug is responsible for a given reaction.</strong></p>
+                <p>Any number of the drugs may be marked as suspect if thought to be responsible for one or more of the reactions, but that information is not validated. Concomitant drugs are those which are not suspected of causing one or more of the reactions. Many drug products appear frequently in adverse event reports simply because they are commonly taken by many people in the population, not because they are responsible for more adverse events.</p>
+                <p>Reports contain varying levels of detail about the drug products involved, indications for use, route of administration, and dose.</p>
+            </div>
         </div>
         <script src="http://code.jquery.com/jquery-2.1.1.js">
         </script>
