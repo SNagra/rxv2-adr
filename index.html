@@ -1,0 +1,156 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/styles.css">
+        <script src="/js/charts.min.js"></script>
+        <script src="/js/legend.js"></script>
+        <script type="text/javascript">
+
+
+            function getUrlParameter(sParam)
+                {
+                    var sPageURL = window.location.search.substring(1);
+                    var sURLVariables = sPageURL.split('&');
+                    for (var i = 0; i < sURLVariables.length; i++)
+                    {
+                        var sParameterName = sURLVariables[i].split('=');
+                        if (sParameterName[0] == sParam)
+                        {
+                            return sParameterName[1];
+                        }
+                    }
+                }
+
+            var drug = getUrlParameter('generic');
+
+            var req = new XMLHttpRequest();
+            var url = 'https://api.fda.gov/drug/event.json?search=patient.drug.openfda.generic_name:"' + drug  + '"&count=patient.reaction.reactionmeddrapt.exact&limit=25';
+            req.onload = reqListener;
+            req.open("GET",  url, true);
+            req.send();
+
+
+            var drugResponse;
+
+            function reqListener () {
+                console.log(this.responseText);
+                drugResponse = JSON.parse(this.responseText);
+
+                var ctx = document.getElementById("myChart").getContext("2d");
+                var data = [
+                        {
+                            value: 300,
+                            label: "Red"
+                        },
+                        {
+                            value: 50,
+                            label: "Green"
+                        },
+                        {
+                            value: 100,
+                            label: "Yellow"
+                        }
+                    ];
+                console.log(drugResponse.results);
+
+                var stringJSON = JSON.stringify(drugResponse.results);
+
+                console.log(stringJSON);
+
+                var i = 0
+                var parsedJson = JSON.parse(stringJSON, function(k,v) {
+
+                    if (k == "count") {
+                        this.value = v;
+                    } else if (k == "term") {
+                        this.label = v;
+                        this.color = "rgb("+ i * 150 + "," + i + "," + i * 5 + ")";
+                    } else {
+                        return v;
+                    }
+                    i++;
+                });
+
+                console.log(parsedJson);
+
+                var options = {
+                      legendTemplate : '<ul>'
+                                      +'<% for (var i=0; i<datasets.length; i++) { %>'
+                                        +'<li>'
+                                        +'<span style=\"background-color:<%=datasets[i].lineColor%>\"></span>'
+                                        +'<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
+                                      +'</li>'
+                                    +'<% } %>'
+                                  +'</ul>'
+                }
+
+                var myDoughnutChart = new Chart(ctx).Doughnut(parsedJson, options);
+
+                legend(document.getElementById('placeholder'),parsedJson);
+
+                if (drug == null) {
+                    document.getElementById('title').innerHTML = "Type generic drug name above.";
+                } else {
+                document.getElementById('title').innerHTML = "Adverse reactions reported for " + drug  ;
+                }
+            }
+
+
+
+            ////////////////////////////////////////////////////////////////
+
+            var reqLabel = new XMLHttpRequest();
+            var urlLabel = 'https://api.fda.gov/drug/label.json?search=openfda.generic_name:"'+drug+'"&limit=1';
+            reqLabel.onload = reqLabelListener;
+            reqLabel.open("GET", urlLabel, true);
+            reqLabel.send();
+
+            function reqLabelListener () {
+                console.log(this.responseText);
+                drugLabelResponse = JSON.parse(this.responseText);
+
+
+                var stringLabelJSON = JSON.stringify(drugLabelResponse.results);
+
+                console.log(stringLabelJSON);
+
+                var i = 0
+                var parsedLabelJSON = JSON.parse(stringLabelJSON, function(k,v) {
+
+                    if ( k != null) {
+
+                    var key = k.split('_').join(' ');
+                    this[key] = v;
+                    } else {
+                    return v;
+                    }
+                });
+
+                console.log(parsedLabelJSON);
+            }
+
+            /////////////////////////////////////////////////////////////////
+
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="lead-title">RxV2 Labs</h1>
+            <form action="/" method="get">
+                <input type="text" name="generic" class="form-control">
+            </form>
+            <h2 id="title">Type generic drug above.</h2>
+<!--            <p id="response"></p>-->
+            <canvas id="myChart" width="400" height="400"></canvas>
+            <div id="placeholder"></div>
+        </div>
+        <script src="http://code.jquery.com/jquery-2.1.1.js">
+        </script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    </body>
+</html>
